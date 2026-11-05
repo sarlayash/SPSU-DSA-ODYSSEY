@@ -1,0 +1,17 @@
+{
+  "name": "SPSU DSA Odyssey: The Algorithmic Quest",
+  "short_name": "SPSU DSA Quest",
+  "description": "Master DSA from Arrays to Backtracking & Dynamic Programming with SPSU Cyber-Matrix Game",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0a0e1a",
+  "theme_color": "#0052cc",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "spsu_logo.png",
+      "sizes": "192x192 512x512",
+      "type": "image/png"
+    }
+  ]
+}

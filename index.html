@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SPSU DSA Odyssey - Algorithmic Cyber Quest</title>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0052cc">
+  <link rel="stylesheet" href="spsu_game.css">
+  <link rel="icon" type="image/png" href="spsu_logo.png">
+</head>
+<body>
+
+  <div class="app-container">
+    <!-- TOP GLOBAL HEADER -->
+    <header class="main-header">
+      <div class="brand-section" data-route="hub">
+        <img src="spsu_logo.png" alt="SPSU Logo" class="brand-logo-mini" onerror="this.style.display='none'">
+        <div class="brand-titles">
+          <div class="brand-name">SPSU DSA ODYSSEY</div>
+          <div class="brand-sub">Algorithmic Matrix Engine</div>
+        </div>
+      </div>
+
+      <div class="user-status-section">
+        <div class="status-badge">
+          <span id="hdr-player-avatar">⚡</span>
+          <span id="hdr-player-name">Guest Cadet</span>
+        </div>
+        <div class="status-badge">
+          <span>⚡ XP:</span>
+          <span id="hdr-player-xp" class="xp-pill">0 XP</span>
+        </div>
+        <div class="status-badge" style="cursor: pointer;" data-route="trophies">
+          <span>🏆 Badges:</span>
+          <span id="hdr-player-badges" class="xp-pill">0 / 10</span>
+        </div>
+      </div>
+
+      <div class="nav-buttons">
+        <button class="btn btn-ghost" id="btn-mute">🔊 Audio: ON</button>
+        <button class="btn btn-ghost" data-route="trophies">🏆 Badges</button>
+        <button class="btn btn-ghost" data-route="certificate">📜 Certificate</button>
+        <button class="btn btn-action" id="btn-download-offline">💾 Download App</button>
+        <button class="btn btn-ghost" id="btn-reset" title="Reset Quest">🔄</button>
+      </div>
+    </header>
+
+    <!-- SCREEN 1: ONBOARDING / CADET LOGIN -->
+    <section id="screen-onboarding" class="app-screen">
+      <div class="onboarding-hero">
+        <div class="onboarding-logo-wrap spsu-vector-emblem"></div>
+        <h1 class="onboarding-title">WELCOME TO SPSU DSA ODYSSEY</h1>
+        <p class="onboarding-subtitle">
+          The Central Algorithmic Core of Sir Padampat Singhania University has fractured! 
+          Enter your engineer callsign, solve 10 interactive cyber-levels from Arrays to Dynamic Programming, 
+          master high-stakes behavioral aptitude, and restore the glowing SPSU Logo Matrix to earn your Verified Algorithmic Master Certificate.
+        </p>
+
+        <div class="onboarding-input-group">
+          <input type="text" id="input-player-name" class="input-cyber" placeholder="Enter Your Cadet / Engineer Name..." maxlength="30" autocomplete="off">
+        </div>
+
+        <div style="font-size: 13px; color: var(--text-muted); margin-bottom: 8px;">CHOOSE YOUR ALGORITHMIC SPECIALIZATION:</div>
+        <div class="avatar-selector">
+          <div class="avatar-opt selected" data-avatar="⚡" title="Speed Optimizer">⚡</div>
+          <div class="avatar-opt" data-avatar="🧠" title="Logic Architect">🧠</div>
+          <div class="avatar-opt" data-avatar="🚀" title="System Pioneer">🚀</div>
+          <div class="avatar-opt" data-avatar="🛡️" title="Security Sentinel">🛡️</div>
+          <div class="avatar-opt" data-avatar="🔮" title="Quantum Synthesizer">🔮</div>
+        </div>
+
+        <button class="btn btn-action" style="width: 100%; padding: 16px; font-size: 16px;" onclick="window.spsuApp.startOnboarding()">
+          🚀 INITIALIZE CADET & BEGIN QUEST
+        </button>
+      </div>
+    </section>
+
+    <!-- SCREEN 2: MISSION HUB / LEVEL SELECT -->
+    <section id="screen-hub" class="app-screen">
+      <div class="hub-grid">
+        <!-- LEFT SIDEBAR: INTERACTIVE SPSU MATRIX STATUS -->
+        <aside class="hub-sidebar">
+          <div class="spsu-core-card">
+            <h3 style="font-family: 'Orbitron'; font-size: 16px; margin-bottom: 12px; color: #fff;">SPSU LOGO MATRIX</h3>
+            <div class="spsu-vector-emblem"></div>
+            <div class="logo-pct-display">0% MATRIX CHARGE</div>
+            <p class="logo-legend">
+              <b>Upper Blue Canopy:</b> Recursion, BST & Graphs<br>
+              <b>Central Horizon:</b> Binary Search & Partitioning<br>
+              <b>Lower Teal Roots:</b> Arrays, Stacks, Queues & DP
+            </p>
+          </div>
+
+          <div id="hub-cert-notice" class="spsu-core-card" style="display: none; border-color: var(--spsu-gold);">
+            <div style="font-size: 32px;">👑</div>
+            <h4 style="color: var(--spsu-gold); font-family: 'Orbitron'; margin: 8px 0;">QUEST COMPLETE!</h4>
+            <p style="font-size: 12px; color: #cbd5e1; margin-bottom: 12px;">All 10 Algorithmic Levels cleared! Your official SPSU Certificate is ready for download!</p>
+            <button class="btn btn-action" data-route="certificate" style="width: 100%;">📜 VIEW CERTIFICATE</button>
+          </div>
+        </aside>
+
+        <!-- RIGHT: 10 LEVEL MISSION CARDS -->
+        <main class="levels-section">
+          <div class="levels-header">
+            <div class="section-title">ACTIVE CYBER-MISSIONS (10 LEVELS)</div>
+            <div style="font-size: 13px; color: var(--text-muted);">From Arrays to Dynamic Programming & Apex Boss</div>
+          </div>
+          <div class="levels-grid" id="levels-grid"></div>
+        </main>
+      </div>
+    </section>
+
+    <!-- SCREEN 3: GAMEPLAY ARENA -->
+    <section id="screen-gameplay" class="app-screen">
+      <div class="gameplay-wrapper">
+        <div class="gameplay-header">
+          <div>
+            <h2 id="play-level-title" style="font-family: 'Orbitron'; color: #fff; font-size: 20px;">Level Mission</h2>
+            <div id="play-level-concept" style="font-size: 13px; color: var(--spsu-teal); margin-top: 4px;">Concept: Array Manipulation</div>
+          </div>
+          <button class="btn btn-ghost" data-route="hub">⬅️ RETURN TO MISSION HUB</button>
+        </div>
+
+        <div class="aptitude-banner">
+          <span style="font-size: 20px;">💡</span>
+          <div id="play-aptitude-tip">Mental Math & Aptitude Tip</div>
+        </div>
+
+        <!-- DYNAMIC LEVEL MECHANICS ARENA -->
+        <div id="play-arena-container"></div>
+      </div>
+    </section>
+
+    <!-- SCREEN 4: TROPHY ROOM / BADGES -->
+    <section id="screen-trophies" class="app-screen">
+      <div class="trophies-container">
+        <div class="gameplay-header">
+          <div>
+            <h2 style="font-family: 'Orbitron'; font-size: 22px;">ALGORITHMIC TROPHY ROOM</h2>
+            <div style="font-size: 13px; color: var(--text-secondary);">Earn all 10 badges to achieve Apex Engineer distinction</div>
+          </div>
+          <button class="btn btn-ghost" data-route="hub">⬅️ RETURN TO MISSION HUB</button>
+        </div>
+        <div class="trophy-grid" id="trophy-grid"></div>
+      </div>
+    </section>
+
+    <!-- SCREEN 5: VERIFIED CERTIFICATE -->
+    <section id="screen-certificate" class="app-screen">
+      <div id="cert-output-container"></div>
+    </section>
+
+  </div>
+
+  <!-- MODAL: SOFT SKILLS & APTITUDE DILEMMA -->
+  <div class="modal-overlay" id="softskill-modal">
+    <div class="modal-content">
+      <div class="modal-header-tag">⭐ HIGH-STAKES APTITUDE & SOFT SKILL EVENT ⭐</div>
+      <div class="modal-title">Workplace Decision Point</div>
+      <div class="dilemma-q" id="softskill-question"></div>
+      <div class="dilemma-options" id="softskill-options"></div>
+    </div>
+  </div>
+
+  <!-- MODAL: VICTORY & LEVEL CLEAR -->
+  <div class="modal-overlay" id="victory-modal">
+    <div class="modal-content" style="text-align: center; align-items: center;">
+      <div style="font-size: 48px;">🏆</div>
+      <div class="modal-header-tag" style="color: #4ade80;">MISSION ACCOMPLISHED!</div>
+      <div class="modal-title" id="vic-level-name">Level Cleared</div>
+      <div style="font-size: 24px; font-weight: 900; color: var(--spsu-gold); font-family: 'JetBrains Mono';" id="vic-xp-gained">+500 XP</div>
+      <div style="background: rgba(0, 82, 204, 0.3); border: 1px solid var(--spsu-teal); border-radius: 12px; padding: 16px; width: 100%;">
+        <div style="font-size: 12px; color: var(--text-muted); text-transform: uppercase;">NEW BADGE UNLOCKED!</div>
+        <div style="font-size: 18px; font-weight: 800; color: #fff; margin: 4px 0;" id="vic-badge-name">Array Architect</div>
+        <div style="font-size: 13px; color: #cbd5e1;" id="vic-badge-desc">Badge Description</div>
+      </div>
+      <button class="btn btn-action" id="btn-vic-hub" style="width: 100%; padding: 14px; margin-top: 10px;">
+        CONTINUE ODYSSEY ➡️
+      </button>
+    </div>
+  </div>
+
+  <!-- SCRIPTS -->
+  <script src="spsu_audio.js"></script>
+  <script src="spsu_levels.js"></script>
+  <script src="spsu_certificate.js"></script>
+  <script src="spsu_app.js"></script>
+
+  <!-- PWA SERVICE WORKER REGISTRATION FOR 100% OFFLINE PLAY -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js')
+          .then(reg => console.log('SPSU PWA Service Worker Registered! Scope:', reg.scope))
+          .catch(err => console.log('Service Worker registration skipped:', err));
+      });
+    }
+
+    // Avatar Selection Event
+    document.querySelectorAll('.avatar-opt').forEach(opt => {
+      opt.addEventListener('click', () => {
+        document.querySelectorAll('.avatar-opt').forEach(o => o.classList.remove('selected'));
+        opt.classList.add('selected');
+        window.spsuAudio.click();
+      });
+    });
+  </script>
+</body>
+</html>

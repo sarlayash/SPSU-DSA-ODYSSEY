@@ -1,0 +1,20 @@
+{
+  "name": "spsu-dsa-odyssey",
+  "version": "1.0.0",
+  "description": "SPSU Logo DSA Odyssey - Interactive Offline Algorithmic Video Game",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "serve": "node server.js"
+  },
+  "keywords": [
+    "spsu",
+    "dsa",
+    "game",
+    "offline-game",
+    "algorithms",
+    "data-structures"
+  ],
+  "author": "Sir Padampat Singhania University (SPSU)",
+  "license": "MIT"
+}
