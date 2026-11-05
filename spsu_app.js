@@ -89,6 +89,16 @@ class SPSUGameApp {
     if (downloadBtn) {
       downloadBtn.addEventListener('click', () => this.downloadOfflinePackage());
     }
+
+    const demoSwitchBtn = document.getElementById('btn-demo-switch');
+    if (demoSwitchBtn) {
+      demoSwitchBtn.addEventListener('click', () => {
+        const choice = prompt("Select Demo Cadet Profile:\n1: Aarav Sharma (Level 1 - Fresh Cadet)\n2: Priya Patel (Level 6 - Mid-Tier)\n3: Yash Birla (Level 10 - Apex Master with Certificate)", "3");
+        if (choice === "1") this.loadDemoUser(1);
+        else if (choice === "2") this.loadDemoUser(2);
+        else if (choice === "3") this.loadDemoUser(3);
+      });
+    }
   }
 
   showScreen(screenId) {
@@ -376,7 +386,9 @@ class SPSUGameApp {
     const victoryModal = document.getElementById('victory-modal');
     document.getElementById('vic-level-name').textContent = lvl.title;
     document.getElementById('vic-xp-gained').textContent = `+${xpGained} XP`;
-    document.getElementById('vic-badge-name').textContent = `${lvl.badge.icon} ${lvl.badge.name}`;
+    document.getElementById('vic-badge-name').textContent = lvl.badge.name;
+    const iconEl = document.getElementById('vic-badge-icon');
+    if (iconEl) iconEl.textContent = lvl.badge.icon;
     document.getElementById('vic-badge-desc').textContent = lvl.badge.desc;
 
     victoryModal.style.display = 'flex';
@@ -391,6 +403,44 @@ class SPSUGameApp {
     };
   }
 
+  loadDemoUser(cadetId) {
+    if (cadetId === 1) {
+      this.state = {
+        playerName: 'Aarav Sharma',
+        avatar: '🌱',
+        xp: 150,
+        unlockedLevel: 1,
+        badges: [],
+        levelStars: {},
+        currentLevelId: null
+      };
+    } else if (cadetId === 2) {
+      this.state = {
+        playerName: 'Priya Patel',
+        avatar: '⚡',
+        xp: 2850,
+        unlockedLevel: 6,
+        badges: ['b1', 'b2', 'b3', 'b4', 'b5'],
+        levelStars: { 1: 3, 2: 3, 3: 3, 4: 3, 5: 3 },
+        currentLevelId: null
+      };
+    } else if (cadetId === 3) {
+      this.state = {
+        playerName: 'Yash Birla',
+        avatar: '👑',
+        xp: 6450,
+        unlockedLevel: 11,
+        badges: ['b1', 'b2', 'b3', 'b4', 'b5', 'b6', 'b7', 'b8', 'b9', 'b10'],
+        levelStars: { 1: 3, 2: 3, 3: 3, 4: 3, 5: 3, 6: 3, 7: 3, 8: 3, 9: 3, 10: 3 },
+        currentLevelId: null
+      };
+    }
+    this.saveState();
+    window.spsuAudio.levelUp();
+    this.showScreen('hub');
+    this.updateHeaderStats();
+  }
+
   renderTrophies() {
     const grid = document.getElementById('trophy-grid');
     if (!grid) return;
@@ -402,7 +452,11 @@ class SPSUGameApp {
       const card = document.createElement('div');
       card.className = `trophy-card ${isEarned ? 'earned' : 'locked'}`;
       card.innerHTML = `
-        <div class="trophy-icon">${b.icon}</div>
+        <div class="trophy-logo-crest">
+          <img src="spsu_logo.png" class="badge-spsu-logo" alt="SPSU Logo" onerror="this.style.display='none'">
+          <span class="badge-icon-overlay">${b.icon}</span>
+        </div>
+        <div class="badge-spsu-tag">SPSU CERTIFIED BADGE</div>
         <div class="trophy-title">${b.name}</div>
         <div class="trophy-desc">${b.desc}</div>
         <div class="trophy-status">${isEarned ? 'UNLOCKED ✅' : `BEAT LEVEL ${lvl.id} TO EARN 🔒`}</div>

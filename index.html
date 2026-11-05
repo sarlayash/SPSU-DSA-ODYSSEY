@@ -38,6 +38,7 @@
       </div>
 
       <div class="nav-buttons">
+        <button class="btn btn-ghost" id="btn-demo-switch">👤 Demo Cadets</button>
         <button class="btn btn-ghost" id="btn-mute">🔊 Audio: ON</button>
         <button class="btn btn-ghost" data-route="trophies">🏆 Badges</button>
         <button class="btn btn-ghost" data-route="certificate">📜 Certificate</button>
@@ -49,11 +50,13 @@
     <!-- SCREEN 1: ONBOARDING / CADET LOGIN -->
     <section id="screen-onboarding" class="app-screen">
       <div class="onboarding-hero">
-        <div class="onboarding-logo-wrap spsu-vector-emblem"></div>
+        <div class="onboarding-logo-wrap" style="width: auto; height: auto;">
+          <img src="spsu_logo.png" alt="Sir Padampat Singhania University (SPSU)" class="spsu-real-logo-hero">
+        </div>
         <h1 class="onboarding-title">WELCOME TO SPSU DSA ODYSSEY</h1>
         <p class="onboarding-subtitle">
-          The Central Algorithmic Core of Sir Padampat Singhania University has fractured! 
-          Enter your engineer callsign, solve 10 interactive cyber-levels from Arrays to Dynamic Programming, 
+          The Central Algorithmic Core of <b>Sir Padampat Singhania University (SPSU)</b> has fractured! 
+          Enter your engineer callsign, conquer 10 interactive cyber-levels from Arrays to Dynamic Programming, 
           master high-stakes behavioral aptitude, and restore the glowing SPSU Logo Matrix to earn your Verified Algorithmic Master Certificate.
         </p>
 
@@ -73,6 +76,28 @@
         <button class="btn btn-action" style="width: 100%; padding: 16px; font-size: 16px;" onclick="window.spsuApp.startOnboarding()">
           🚀 INITIALIZE CADET & BEGIN QUEST
         </button>
+
+        <!-- INSTANT DEMO CADET PROFILES FOR TESTING -->
+        <div class="demo-users-section">
+          <div class="demo-title">🎮 OR TEST INSTANTLY WITH A DEMO CADET PROFILE:</div>
+          <div class="demo-users-grid">
+            <div class="demo-user-card" onclick="window.spsuApp.loadDemoUser(1)">
+              <div class="demo-user-avatar">🌱</div>
+              <div class="demo-user-name">Aarav Sharma</div>
+              <div class="demo-user-meta">Level 1 (Fresh Cadet)</div>
+            </div>
+            <div class="demo-user-card" onclick="window.spsuApp.loadDemoUser(2)">
+              <div class="demo-user-avatar">⚡</div>
+              <div class="demo-user-name">Priya Patel</div>
+              <div class="demo-user-meta">Level 6 (Mid-Tier • 5 Badges)</div>
+            </div>
+            <div class="demo-user-card" onclick="window.spsuApp.loadDemoUser(3)" style="border-color: var(--spsu-gold);">
+              <div class="demo-user-avatar">👑</div>
+              <div class="demo-user-name">Yash Birla</div>
+              <div class="demo-user-meta" style="color: var(--spsu-gold);">Level 10 Master (10 Badges • Cert)</div>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -82,13 +107,13 @@
         <!-- LEFT SIDEBAR: INTERACTIVE SPSU MATRIX STATUS -->
         <aside class="hub-sidebar">
           <div class="spsu-core-card">
-            <h3 style="font-family: 'Orbitron'; font-size: 16px; margin-bottom: 12px; color: #fff;">SPSU LOGO MATRIX</h3>
-            <div class="spsu-vector-emblem"></div>
+            <h3 style="font-family: 'Orbitron'; font-size: 16px; margin-bottom: 12px; color: #fff;">SPSU CENTRAL MATRIX</h3>
+            <img src="spsu_logo.png" alt="SPSU Official Logo" class="spsu-real-logo-sidebar">
             <div class="logo-pct-display">0% MATRIX CHARGE</div>
             <p class="logo-legend">
-              <b>Upper Blue Canopy:</b> Recursion, BST & Graphs<br>
-              <b>Central Horizon:</b> Binary Search & Partitioning<br>
-              <b>Lower Teal Roots:</b> Arrays, Stacks, Queues & DP
+              <b>Upper Blue Circuit Tree:</b> Trees, AVL Rotations & Graphs<br>
+              <b>Central Horizon Line:</b> Binary Search & Partitioning<br>
+              <b>Lower Teal Pillars:</b> Arrays, Stacks, Queues & DP
             </p>
           </div>
 
@@ -171,7 +196,11 @@
       <div class="modal-title" id="vic-level-name">Level Cleared</div>
       <div style="font-size: 24px; font-weight: 900; color: var(--spsu-gold); font-family: 'JetBrains Mono';" id="vic-xp-gained">+500 XP</div>
       <div style="background: rgba(0, 82, 204, 0.3); border: 1px solid var(--spsu-teal); border-radius: 12px; padding: 16px; width: 100%;">
-        <div style="font-size: 12px; color: var(--text-muted); text-transform: uppercase;">NEW BADGE UNLOCKED!</div>
+        <div class="trophy-logo-crest" style="width: 70px; height: 70px; margin: 0 auto 8px;">
+          <img src="spsu_logo.png" class="badge-spsu-logo" alt="SPSU Logo" onerror="this.style.display='none'">
+          <span class="badge-icon-overlay" id="vic-badge-icon">🎖️</span>
+        </div>
+        <div class="badge-spsu-tag">SPSU CERTIFIED BADGE UNLOCKED!</div>
         <div style="font-size: 18px; font-weight: 800; color: #fff; margin: 4px 0;" id="vic-badge-name">Array Architect</div>
         <div style="font-size: 13px; color: #cbd5e1;" id="vic-badge-desc">Badge Description</div>
       </div>

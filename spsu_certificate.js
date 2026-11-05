@@ -31,10 +31,11 @@ class SPSUCertificateEngine {
       <div class="cert-wrapper">
         ${bannerHtml}
         <div class="cert-card" id="printable-cert">
+          <img src="spsu_logo.png" class="cert-watermark-real" alt="SPSU Watermark" onerror="this.style.display='none'">
           <div class="cert-border-outer">
             <div class="cert-border-inner">
               <div class="cert-header">
-                <img src="spsu_logo.png" class="cert-logo-img" alt="SPSU Logo" onerror="this.style.display='none'">
+                <img src="spsu_logo.png" class="spsu-real-logo-hero" style="width: 100px; height: 100px; margin: 0 auto 10px; padding: 8px; border-radius: 16px;" alt="SPSU Logo" onerror="this.style.display='none'">
                 <div class="cert-org-title">SIR PADAMPAT SINGHANIA UNIVERSITY</div>
                 <div class="cert-sub-org">School of Computer Science & Algorithmic Engineering</div>
               </div>
@@ -131,32 +132,55 @@ class SPSUCertificateEngine {
     ctx.lineWidth = 2;
     ctx.strokeRect(40, 40, 1120, 720);
 
+    // Draw Real SPSU Logo
+    const logoImg = document.querySelector('.spsu-real-logo-hero') || document.querySelector('.brand-logo-mini');
+    if (logoImg && logoImg.complete) {
+      // Subtle center watermark
+      ctx.save();
+      ctx.globalAlpha = 0.08;
+      ctx.drawImage(logoImg, 450, 240, 300, 300);
+      ctx.restore();
+
+      // Top logo badge
+      ctx.save();
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath();
+      if (ctx.roundRect) {
+        ctx.roundRect(555, 28, 90, 90, [14]);
+      } else {
+        ctx.rect(555, 28, 90, 90);
+      }
+      ctx.fill();
+      ctx.drawImage(logoImg, 560, 33, 80, 80);
+      ctx.restore();
+    }
+
     // University Title
     ctx.textAlign = 'center';
     ctx.fillStyle = '#ffffff';
-    ctx.font = 'bold 32px sans-serif';
-    ctx.fillText('SIR PADAMPAT SINGHANIA UNIVERSITY', 600, 110);
+    ctx.font = 'bold 30px sans-serif';
+    ctx.fillText('SIR PADAMPAT SINGHANIA UNIVERSITY', 600, 148);
 
     ctx.fillStyle = '#00e5ff';
-    ctx.font = '18px sans-serif';
-    ctx.fillText('School of Computer Science & Algorithmic Engineering', 600, 140);
+    ctx.font = '17px sans-serif';
+    ctx.fillText('School of Computer Science & Algorithmic Engineering', 600, 175);
 
     // Ribbon
     ctx.fillStyle = '#ffb703';
-    ctx.font = 'bold 24px sans-serif';
-    ctx.fillText('★ CERTIFICATE OF ALGORITHMIC EXCELLENCE ★', 600, 195);
+    ctx.font = 'bold 22px sans-serif';
+    ctx.fillText('★ CERTIFICATE OF ALGORITHMIC EXCELLENCE ★', 600, 218);
 
     // Text
     ctx.fillStyle = '#a0aec0';
-    ctx.font = '18px sans-serif';
-    ctx.fillText('This is to officially certify that', 600, 240);
+    ctx.font = '17px sans-serif';
+    ctx.fillText('This is to officially certify that', 600, 258);
 
     // Player Name
     ctx.fillStyle = '#ffffff';
     ctx.font = 'bold 42px sans-serif';
     ctx.shadowColor = '#00e5ff';
     ctx.shadowBlur = 15;
-    ctx.fillText(playerName.toUpperCase() || 'CADET ALGORITHMIST', 600, 310);
+    ctx.fillText(playerName.toUpperCase() || 'CADET ALGORITHMIST', 600, 320);
     ctx.shadowBlur = 0;
 
     // Body description
