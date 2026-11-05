@@ -136,10 +136,22 @@ const SPSU_LEVELS = [
         } else {
           window.spsuAudio.error();
           attempts++;
+          if (attempts >= 2) {
+            log.innerHTML = `⚡ <b>AUTO-RESOLVE ENGAGED (2/2 Failed Attempts):</b> System demonstrating Two-Pointer convergence step-by-step! Advancing Left & Retracting Right...`;
+            setTimeout(() => {
+              left = 3; // 11
+              right = 4; // 14
+              renderArray();
+              window.spsuAudio.success();
+              log.innerHTML = `🤖 <b>CORRECT SOLUTION AUTO-RESOLVED:</b> Found [Index 3: 11] + [Index 4: 14] = 25! <br>💡 <b>Lesson:</b> When sum < target (25), advance L++; when sum > target, retract R--. Eliminates search in O(N)!`;
+              setTimeout(() => onComplete(true, 50), 2200);
+            }, 1200);
+            return;
+          }
           if (sum < target) {
-            log.innerHTML = `❌ Sum ${sum} is LESS than target ${target}! Algorithmic rule: When sum < target, advance LEFT pointer (L++)!`;
+            log.innerHTML = `❌ Sum ${sum} is LESS than target ${target}! [Attempt ${attempts}/2]. Algorithmic rule: When sum < target, advance LEFT pointer (L++)!`;
           } else {
-            log.innerHTML = `❌ Sum ${sum} is GREATER than target ${target}! Algorithmic rule: When sum > target, retract RIGHT pointer (R--)!`;
+            log.innerHTML = `❌ Sum ${sum} is GREATER than target ${target}! [Attempt ${attempts}/2]. Algorithmic rule: When sum > target, retract RIGHT pointer (R--)!`;
           }
         }
       };
@@ -167,6 +179,19 @@ const SPSU_LEVELS = [
       let stream = ['{', '[', '(', ')', ']', '}'];
       let stack = [];
       let currentIdx = 0;
+      let wrongAttempts = 0;
+
+      function autoResolveLvl2() {
+        log.innerHTML = `⚡ <b>AUTO-RESOLVE ENGAGED (2/2 Failed Attempts):</b> Executing balanced LIFO stack parse step-by-step...`;
+        setTimeout(() => {
+          stack = [];
+          currentIdx = stream.length;
+          updateUI();
+          window.spsuAudio.success();
+          log.innerHTML = `🤖 <b>CORRECT SOLUTION AUTO-RESOLVED:</b> Pushed open brackets '{', '[', '(' into stack, then popped each to match ')', ']', '}'. Stack height = 0!<br>💡 <b>Lesson:</b> Stack LIFO enforces that the most recently opened bracket must be the first to close!`;
+          setTimeout(() => onComplete(true, 50), 2200);
+        }, 1000);
+      }
 
       container.innerHTML = `
         <div class="level-hud">
@@ -244,7 +269,9 @@ const SPSU_LEVELS = [
           updateUI();
         } else {
           window.spsuAudio.error();
-          log.textContent = `⚠️ Cannot PUSH closing bracket '${tok}'! It must POP its matching pair from TOP of stack!`;
+          wrongAttempts++;
+          if (wrongAttempts >= 2) return autoResolveLvl2();
+          log.textContent = `⚠️ Cannot PUSH closing bracket '${tok}'! [Attempt ${wrongAttempts}/2] It must POP its matching pair from TOP of stack!`;
         }
       };
 
@@ -262,7 +289,9 @@ const SPSU_LEVELS = [
         if ([')', ']', '}'].includes(tok)) {
           if (stack.length === 0) {
             window.spsuAudio.error();
-            log.textContent = `❌ Stack Underflow! Closing bracket '${tok}' has no matching opener!`;
+            wrongAttempts++;
+            if (wrongAttempts >= 2) return autoResolveLvl2();
+            log.textContent = `❌ Stack Underflow! [Attempt ${wrongAttempts}/2] Closing bracket '${tok}' has no matching opener!`;
             return;
           }
           const top = stack.pop();
@@ -277,12 +306,16 @@ const SPSU_LEVELS = [
             }
           } else {
             window.spsuAudio.error();
-            log.textContent = `❌ SYNTAX MISMATCH! Top is '${top}', but incoming was '${tok}'!`;
+            wrongAttempts++;
+            if (wrongAttempts >= 2) return autoResolveLvl2();
+            log.textContent = `❌ SYNTAX MISMATCH! [Attempt ${wrongAttempts}/2] Top is '${top}', but incoming was '${tok}'!`;
             stack.push(top);
           }
         } else {
           window.spsuAudio.error();
-          log.textContent = `⚠️ '${tok}' is an opening bracket! Opening brackets must be PUSHED!`;
+          wrongAttempts++;
+          if (wrongAttempts >= 2) return autoResolveLvl2();
+          log.textContent = `⚠️ '${tok}' is an opening bracket! [Attempt ${wrongAttempts}/2] Opening brackets must be PUSHED!`;
         }
       };
     }
@@ -332,6 +365,7 @@ const SPSU_LEVELS = [
       const visual = container.querySelector('#chain-visual');
       const log = container.querySelector('#lvl3-log');
       let isSevered = false;
+      let wrongAttempts = 0;
 
       function renderChain() {
         visual.innerHTML = '';
@@ -373,7 +407,17 @@ const SPSU_LEVELS = [
         window.spsuAudio.click();
         if (!isSevered) {
           window.spsuAudio.error();
-          log.innerHTML = `⚠️ CRITICAL EXCEPTION: Infinite Loop Traversal! 101 -> 102 -> 103 -> 104 -> 102 -> 103... Call stack exhausted! Sever the link first!`;
+          wrongAttempts++;
+          if (wrongAttempts >= 2) {
+            chain[3].next = 105;
+            isSevered = true;
+            renderChain();
+            window.spsuAudio.success();
+            log.innerHTML = `⚡ <b>AUTO-RESOLVE ENGAGED (2/2 Failed Attempts):</b> Severed cyclic pointer 104 ➡️ 102! Rewired next pointer to [105 EXIT]. Memory stream stabilized!<br>💡 <b>Lesson:</b> Cyclic loops exhaust memory stacks. Floyd's Tortoise & Hare algorithm detects cycle intersections in O(N) time and O(1) space!`;
+            setTimeout(() => onComplete(true, 50), 2200);
+            return;
+          }
+          log.innerHTML = `⚠️ CRITICAL EXCEPTION: Infinite Loop Traversal! [Attempt ${wrongAttempts}/2] 101 -> 102 -> 103 -> 104 -> 102... Call stack exhausted! Sever the link first!`;
         } else {
           window.spsuAudio.success();
           log.innerHTML = `🎉 POINTER REACHED NULL SAFELY! Traversed 101 -> 102 -> 103 -> 104 -> 105 -> NULL! Memory stream stabilized!`;
@@ -404,6 +448,7 @@ const SPSU_LEVELS = [
       let low = 1;
       let high = 100;
       let pingsLeft = 7; // log2(100) ≈ 6.64
+      let wrongResets = 0;
 
       container.innerHTML = `
         <div class="level-hud">
@@ -431,7 +476,16 @@ const SPSU_LEVELS = [
       container.querySelector('#btn-ping-mid').onclick = () => {
         if (pingsLeft <= 0) {
           window.spsuAudio.error();
-          log.textContent = `❌ OUT OF PINGS! Resetting frequency radar.`;
+          wrongResets++;
+          if (wrongResets >= 2) {
+            low = secret; high = secret;
+            dispLow.textContent = secret; dispHigh.textContent = secret; dispMid.textContent = secret;
+            window.spsuAudio.success();
+            log.innerHTML = `⚡ <b>AUTO-RESOLVE ENGAGED (2/2 Failed Attempts):</b> Bisected search space to Target Frequency ${secret}!<br>💡 <b>Lesson:</b> Binary Search eliminates half the unknown space every query. O(log N) finds any element in 1,000 items in at most 10 probes!`;
+            setTimeout(() => onComplete(true, 50), 2200);
+            return;
+          }
+          log.textContent = `❌ OUT OF PINGS! [Failed attempt ${wrongResets}/2] Resetting frequency radar.`;
           low = 1; high = 100; pingsLeft = 7;
           dispLow.textContent = low; dispHigh.textContent = high;
           dispMid.textContent = Math.floor(low + (high - low)/2);
@@ -504,6 +558,7 @@ const SPSU_LEVELS = [
       const slots = container.querySelector('#sort-items');
       const log = container.querySelector('#lvl5-log');
       let selectedIdx = null;
+      let wrongAttempts = 0;
 
       function render() {
         slots.innerHTML = '';
@@ -569,7 +624,16 @@ const SPSU_LEVELS = [
           setTimeout(() => onComplete(true, 100), 1200);
         } else {
           window.spsuAudio.error();
-          log.innerHTML = `❌ INVALID PARTITION! There is still an element < ${pivot} sitting to the right of an element >= ${pivot}! Swap them!`;
+          wrongAttempts++;
+          if (wrongAttempts >= 2) {
+            data = [12, 34, 23, 45, 89, 67];
+            render();
+            window.spsuAudio.success();
+            log.innerHTML = `⚡ <b>AUTO-RESOLVE ENGAGED (2/2 Failed Attempts):</b> Partitioning elements around Pivot 40!<br>✅ Left (&lt; 40): [12, 34, 23] | Right (&gt;= 40): [45, 89, 67]<br>💡 <b>Lesson:</b> In-place QuickSort partition places smaller elements to the left and larger to the right in O(N) time!`;
+            setTimeout(() => onComplete(true, 50), 2200);
+            return;
+          }
+          log.innerHTML = `❌ INVALID PARTITION! [Attempt ${wrongAttempts}/2] There is still an element < ${pivot} sitting to the right of an element >= ${pivot}! Swap them!`;
         }
       };
 
@@ -606,6 +670,7 @@ const SPSU_LEVELS = [
           <div class="tree-canvas" id="tree-canvas"></div>
           <div class="controls-panel">
             <button class="btn btn-action" id="btn-left-rotate">🔄 EXECUTE LEFT ROTATION (AVL REBALANCE)</button>
+            <button class="btn btn-ghost" id="btn-right-rotate">🔄 EXECUTE RIGHT ROTATION</button>
           </div>
           <div class="battle-log" id="lvl6-log">Telemetry: Current Tree is unhealthily skewed! Search efficiency is O(N). Trigger AVL rotation to balance!</div>
         </div>
@@ -640,6 +705,22 @@ const SPSU_LEVELS = [
 
       drawTree();
 
+      let wrongAttempts = 0;
+
+      container.querySelector('#btn-right-rotate').onclick = () => {
+        window.spsuAudio.error();
+        wrongAttempts++;
+        if (wrongAttempts >= 2) {
+          isRotated = true;
+          drawTree();
+          window.spsuAudio.success();
+          log.innerHTML = `⚡ <b>AUTO-RESOLVE ENGAGED (2/2 Failed Attempts):</b> Executing Left Rotation on Node 10!<br>✅ Node 20 lifted to root, 10 to left child, 30 to right child!<br>💡 <b>Lesson:</b> Right-Right heavy skew (Balance Factor = -2) requires a LEFT rotation to restore balance factor 0 and maintain O(log N) depth!`;
+          setTimeout(() => onComplete(true, 50), 2200);
+          return;
+        }
+        log.innerHTML = `❌ INVALID ROTATION! [Attempt ${wrongAttempts}/2] The tree is Right-heavy (BF = -2). A Right Rotation would worsen the imbalance! You need a LEFT rotation!`;
+      };
+
       container.querySelector('#btn-left-rotate').onclick = () => {
         window.spsuAudio.laser();
         isRotated = true;
@@ -671,6 +752,7 @@ const SPSU_LEVELS = [
       // Graph nodes: S -> A -> D -> T (Target) vs S -> B -> C -> E -> T
       let selectedPath = ['S'];
       const correctShortestPath = ['S', 'A', 'D', 'T'];
+      let wrongAttempts = 0;
 
       container.innerHTML = `
         <div class="level-hud">
@@ -759,7 +841,21 @@ const SPSU_LEVELS = [
           setTimeout(() => onComplete(true, 100), 1200);
         } else {
           window.spsuAudio.error();
-          log.innerHTML = `❌ NOT THE BFS SHORTEST PATH! BFS expands radially level by level. The shortest path from S to T requires exactly 3 hops (S -> A -> D -> T).`;
+          wrongAttempts++;
+          if (wrongAttempts >= 2) {
+            selectedPath = ['S', 'A', 'D', 'T'];
+            buttons.forEach(b => {
+              const bid = b.getAttribute('data-id');
+              if (['S', 'A', 'D', 'T'].includes(bid)) b.classList.add('active-node');
+              else b.classList.remove('active-node');
+            });
+            pathDisp.textContent = '[S ➡️ A ➡️ D ➡️ T]';
+            window.spsuAudio.success();
+            log.innerHTML = `⚡ <b>AUTO-RESOLVE ENGAGED (2/2 Failed Attempts):</b> Traced shortest BFS route: S ➡️ A ➡️ D ➡️ T (3 edges)!<br>💡 <b>Lesson:</b> Breadth-First Search radiates outward in concentric levels via a FIFO Queue, mathematically guaranteeing the shortest path in unweighted graphs!`;
+            setTimeout(() => onComplete(true, 50), 2200);
+            return;
+          }
+          log.innerHTML = `❌ NOT THE BFS SHORTEST PATH! [Attempt ${wrongAttempts}/2] The shortest path from S to T requires exactly 3 hops (S -> A -> D -> T).`;
         }
       };
     }
@@ -784,6 +880,7 @@ const SPSU_LEVELS = [
     init(container, onComplete) {
       // 4x4 Grid for 4-Queens. Valid solution: (row 0, col 1), (row 1, col 3), (row 2, col 0), (row 3, col 2)
       let queens = [-1, -1, -1, -1]; // queens[row] = col
+      let wrongAttempts = 0;
 
       container.innerHTML = `
         <div class="level-hud">
@@ -852,19 +949,28 @@ const SPSU_LEVELS = [
 
       container.querySelector('#btn-check-queens').onclick = () => {
         const placed = queens.filter(c => c !== -1).length;
-        if (placed < 4) {
+        if (placed < 4 || hasConflicts()) {
           window.spsuAudio.error();
-          log.innerHTML = `⚠️ Need 4 sentinels placed! Currently only ${placed} active.`;
+          wrongAttempts++;
+          if (wrongAttempts >= 2) {
+            queens = [1, 3, 0, 2];
+            renderGrid();
+            window.spsuAudio.success();
+            log.innerHTML = `⚡ <b>AUTO-RESOLVE ENGAGED (2/2 Failed Attempts):</b> Placed valid 4-Queens sentinels at cols [1, 3, 0, 2]!<br>✅ Row 0: Col 1 | Row 1: Col 3 | Row 2: Col 0 | Row 3: Col 2 (Zero line-of-fire conflicts!)<br>💡 <b>Lesson:</b> Backtracking explores state trees systematically and prunes candidate branches immediately upon conflict!`;
+            setTimeout(() => onComplete(true, 50), 2200);
+            return;
+          }
+          if (placed < 4) {
+            log.innerHTML = `⚠️ Need 4 sentinels placed! [Attempt ${wrongAttempts}/2] Currently only ${placed} active.`;
+          } else {
+            log.innerHTML = `❌ CONFLICT DETECTED! [Attempt ${wrongAttempts}/2] Two sentinels can attack each other along the same column or diagonal! Backtrack and adjust!`;
+          }
           return;
         }
-        if (!hasConflicts()) {
-          window.spsuAudio.success();
-          log.innerHTML = `🎉 N-QUEENS CONSTRAINT SATISFIED! Zero row, column, or diagonal conflicts! The Right Canopy of the SPSU logo blazes with power!`;
-          setTimeout(() => onComplete(true, 100), 1200);
-        } else {
-          window.spsuAudio.error();
-          log.innerHTML = `❌ CONFLICT DETECTED! Two sentinels can attack each other along the same column or diagonal! Backtrack and adjust!`;
-        }
+
+        window.spsuAudio.success();
+        log.innerHTML = `🎉 N-QUEENS CONSTRAINT SATISFIED! Zero row, column, or diagonal conflicts! The Right Canopy of the SPSU logo blazes with power!`;
+        setTimeout(() => onComplete(true, 100), 1200);
       };
 
       container.querySelector('#btn-backtrack-one').onclick = () => {
@@ -914,6 +1020,7 @@ const SPSU_LEVELS = [
       // Item 3: W=3, V=$30
       // Optimal combo: Item 1 + Item 3 = W: 4kg, Value: $45
       let selectedItems = [];
+      let wrongAttempts = 0;
 
       container.innerHTML = `
         <div class="level-hud">
@@ -1000,17 +1107,28 @@ const SPSU_LEVELS = [
           totalV += items[idx].v;
         });
 
-        if (totalW > 4) {
+        if (totalW > 4 || totalV !== 45) {
           window.spsuAudio.error();
-          log.innerHTML = `❌ VAULT OVERWEIGHT! ${totalW} kg exceeds 4 kg limit! Knapsack constraint violated!`;
-        } else if (totalV === 45 && totalW === 4) {
-          window.spsuAudio.success();
-          log.innerHTML = `🎉 GLOBAL OPTIMAL SOLUTION REACHED! Packed Item A ($15, 1kg) + Item C ($30, 3kg) = $45 value at exactly 4kg! DP Memoization Mastered!`;
-          setTimeout(() => onComplete(true, 100), 1200);
-        } else {
-          window.spsuAudio.error();
-          log.innerHTML = `⚠️ Suboptimal payload ($${totalV}, ${totalW}kg). The optimal substructure can yield up to $45! Try another combination!`;
+          wrongAttempts++;
+          if (wrongAttempts >= 2) {
+            selectedItems = [0, 2];
+            updateKnapsack();
+            window.spsuAudio.success();
+            log.innerHTML = `⚡ <b>AUTO-RESOLVE ENGAGED (2/2 Failed Attempts):</b> Loaded Optimal DP Substructure: Item A ($15, 1kg) + Item C ($30, 3kg) = $45 at 4kg!<br>💡 <b>Lesson:</b> 0/1 Knapsack stores optimal intermediate weights in a memoization table (O(N × W)), preventing redundant 2^N branch recalculation!`;
+            setTimeout(() => onComplete(true, 50), 2200);
+            return;
+          }
+          if (totalW > 4) {
+            log.innerHTML = `❌ VAULT OVERWEIGHT! [Attempt ${wrongAttempts}/2] ${totalW} kg exceeds 4 kg limit! Knapsack constraint violated!`;
+          } else {
+            log.innerHTML = `⚠️ Suboptimal payload ($${totalV}, ${totalW}kg). [Attempt ${wrongAttempts}/2] Optimal substructure can yield $45! Try another combination!`;
+          }
+          return;
         }
+
+        window.spsuAudio.success();
+        log.innerHTML = `🎉 GLOBAL OPTIMAL SOLUTION REACHED! Packed Item A ($15, 1kg) + Item C ($30, 3kg) = $45 value at exactly 4kg! DP Memoization Mastered!`;
+        setTimeout(() => onComplete(true, 100), 1200);
       };
     }
   },

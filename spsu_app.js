@@ -325,6 +325,7 @@ class SPSUGameApp {
 
     qEl.textContent = scenario.question;
     optsEl.innerHTML = '';
+    let wrongDilemmaAttempts = 0;
 
     scenario.options.forEach((opt, idx) => {
       const btn = document.createElement('button');
@@ -332,27 +333,52 @@ class SPSUGameApp {
       btn.innerHTML = `<span class="opt-key">[Option ${String.fromCharCode(65 + idx)}]</span> ${opt.text}`;
       btn.onclick = () => {
         window.spsuAudio.click();
-        optsEl.innerHTML = `
-          <div class="dilemma-feedback ${opt.correct ? 'feedback-correct' : 'feedback-wrong'}">
-            ${opt.feedback}
-          </div>
-          <button class="btn btn-action" id="btn-finish-level" style="margin-top:15px; width:100%;">
-            ${opt.correct ? '🏆 CLAIM LEVEL VICTORY' : 'RETRY SCENARIO'}
-          </button>
-        `;
-
-        const finishBtn = optsEl.querySelector('#btn-finish-level');
         if (opt.correct) {
           window.spsuAudio.success();
-          finishBtn.onclick = () => {
+          optsEl.innerHTML = `
+            <div class="dilemma-feedback feedback-correct">
+              ${opt.feedback}
+            </div>
+            <button class="btn btn-action" id="btn-finish-level" style="margin-top:15px; width:100%;">
+              🏆 CLAIM LEVEL VICTORY
+            </button>
+          `;
+          optsEl.querySelector('#btn-finish-level').onclick = () => {
             modal.style.display = 'none';
             this.handleLevelVictory(lvl);
           };
         } else {
           window.spsuAudio.error();
-          finishBtn.onclick = () => {
-            this.triggerSoftSkillDilemma(lvl);
-          };
+          wrongDilemmaAttempts++;
+          if (wrongDilemmaAttempts >= 2) {
+            const correctOpt = scenario.options.find(o => o.correct);
+            optsEl.innerHTML = `
+              <div class="dilemma-feedback feedback-correct" style="border-color: var(--spsu-gold); background: rgba(255, 183, 3, 0.2);">
+                ⚡ <b>AUTO-RESOLVE ENGAGED (2/2 Failed Attempts):</b><br>
+                💡 <b>Optimal Executive Leadership Move:</b> ${correctOpt.text}<br><br>
+                <b>Why this works:</b> ${correctOpt.feedback}
+              </div>
+              <button class="btn btn-action" id="btn-finish-level" style="margin-top:15px; width:100%;">
+                🏆 CONTINUE & ADVANCE
+              </button>
+            `;
+            optsEl.querySelector('#btn-finish-level').onclick = () => {
+              modal.style.display = 'none';
+              this.handleLevelVictory(lvl);
+            };
+          } else {
+            optsEl.innerHTML = `
+              <div class="dilemma-feedback feedback-wrong">
+                ${opt.feedback} [Attempt ${wrongDilemmaAttempts}/2]
+              </div>
+              <button class="btn btn-action" id="btn-retry-dilemma" style="margin-top:15px; width:100%;">
+                RETRY SCENARIO (1 Attempt Remaining)
+              </button>
+            `;
+            optsEl.querySelector('#btn-retry-dilemma').onclick = () => {
+              this.triggerSoftSkillDilemma(lvl);
+            };
+          }
         }
       };
       optsEl.appendChild(btn);
