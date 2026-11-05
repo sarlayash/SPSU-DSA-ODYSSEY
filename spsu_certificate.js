@@ -7,16 +7,29 @@ class SPSUCertificateEngine {
     this.ctx = null;
   }
 
-  generateCertificate(playerName, totalXP, badgesCount, container) {
+  generateCertificate(playerName, totalXP, badgesCount, container, isFullMastery = false, currentLevel = 1) {
     const issueDate = new Date().toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'long',
       day: 'numeric'
     });
-    const verificationCode = 'SPSU-DSA-' + Math.random().toString(36).substring(2, 8).toUpperCase() + '-VERIFIED';
+    const verificationCode = isFullMastery 
+      ? ('SPSU-DSA-' + Math.random().toString(36).substring(2, 8).toUpperCase() + '-VERIFIED')
+      : 'SPSU-DSA-IN-PROGRESS-TRAINING';
+
+    const bannerHtml = !isFullMastery ? `
+      <div class="cert-status-banner" style="background: rgba(255, 183, 3, 0.15); border: 2px solid #ffb703; padding: 14px 20px; border-radius: 12px; margin-bottom: 20px; text-align: center;">
+        <span style="font-size: 20px;">🛡️</span>
+        <b style="color: #ffb703; font-size: 15px;"> CADET IN TRAINING PREVIEW (${Math.min(10, currentLevel - 1)} / 10 LEVELS CLEARED)</b>
+        <p style="font-size: 13px; color: #cbd5e1; margin-top: 4px;">
+          Complete all 10 DSA cyber-levels and defeat the Apex Boss to unlock the official verified University seal!
+        </p>
+      </div>
+    ` : '';
 
     container.innerHTML = `
       <div class="cert-wrapper">
+        ${bannerHtml}
         <div class="cert-card" id="printable-cert">
           <div class="cert-border-outer">
             <div class="cert-border-inner">

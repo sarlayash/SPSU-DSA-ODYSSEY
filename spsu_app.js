@@ -50,6 +50,17 @@ class SPSUGameApp {
     }
     this.updateHeaderStats();
     this.bindGlobalEvents();
+
+    // Auto-unlock Web Audio on first user interaction
+    const unlockAudio = () => {
+      window.spsuAudio.init();
+      window.removeEventListener('click', unlockAudio);
+      window.removeEventListener('keydown', unlockAudio);
+      window.removeEventListener('touchstart', unlockAudio);
+    };
+    window.addEventListener('click', unlockAudio);
+    window.addEventListener('keydown', unlockAudio);
+    window.addEventListener('touchstart', unlockAudio);
   }
 
   bindGlobalEvents() {
@@ -403,11 +414,14 @@ class SPSUGameApp {
   renderCertificateScreen() {
     const container = document.getElementById('cert-output-container');
     if (!container) return;
+    const isMastery = this.state.unlockedLevel > 10;
     window.spsuCert.generateCertificate(
       this.state.playerName,
       this.state.xp,
       this.state.badges.length,
-      container
+      container,
+      isMastery,
+      this.state.unlockedLevel
     );
   }
 

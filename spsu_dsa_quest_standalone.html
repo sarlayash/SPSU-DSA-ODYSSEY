@@ -1467,7 +1467,7 @@ class SPSUAudioEngine {
       }
     }
     if (this.ctx && this.ctx.state === 'suspended') {
-      this.ctx.resume();
+      this.ctx.resume().catch(() => {});
     }
   }
 
@@ -1602,9 +1602,12 @@ const SPSU_LEVELS = [
             <div class="pointer-box right-p"><span>R (Index ${right})</span>: <b id="val-r">${sortedArray[right]}</b></div>
           </div>
           <div class="controls-panel">
-            <button class="btn btn-action" id="btn-inc-l">Move Left Pointer ➡️ (L++)</button>
+            <button class="btn btn-ghost" id="btn-dec-l">⬅️ L--</button>
+            <button class="btn btn-action" id="btn-inc-l">L++ ➡️</button>
             <button class="btn btn-action" id="btn-lock">⚡ LOCK IN PAIR & FIRE</button>
-            <button class="btn btn-action" id="btn-dec-r">Move Right Pointer ⬅️ (R--)</button>
+            <button class="btn btn-action" id="btn-dec-r">⬅️ R--</button>
+            <button class="btn btn-ghost" id="btn-inc-r">R++ ➡️</button>
+            <button class="btn btn-ghost" id="btn-reset-ptrs">🔄 Reset Pointers</button>
           </div>
           <div class="battle-log" id="lvl1-log">Telemetry: Pointers initialized at extremes. Is Current Sum < Target or > Target?</div>
         </div>
@@ -1639,6 +1642,15 @@ const SPSU_LEVELS = [
 
       renderArray();
 
+      container.querySelector('#btn-dec-l').onclick = () => {
+        window.spsuAudio.click();
+        if (left > 0) {
+          left--;
+          renderArray();
+          log.textContent = `Retracted L to [${left}]. Sum decreased to ${sortedArray[left] + sortedArray[right]}.`;
+        }
+      };
+
       container.querySelector('#btn-inc-l').onclick = () => {
         window.spsuAudio.click();
         if (left < right - 1) {
@@ -1659,6 +1671,23 @@ const SPSU_LEVELS = [
         } else {
           log.textContent = `Warning: Pointers cannot cross!`;
         }
+      };
+
+      container.querySelector('#btn-inc-r').onclick = () => {
+        window.spsuAudio.click();
+        if (right < sortedArray.length - 1) {
+          right++;
+          renderArray();
+          log.textContent = `Expanded R to [${right}]. Sum increased to ${sortedArray[left] + sortedArray[right]}.`;
+        }
+      };
+
+      container.querySelector('#btn-reset-ptrs').onclick = () => {
+        window.spsuAudio.click();
+        left = 0;
+        right = sortedArray.length - 1;
+        renderArray();
+        log.textContent = `Pointers reset to extremes [0] and [${right}].`;
       };
 
       container.querySelector('#btn-lock').onclick = () => {
@@ -1723,6 +1752,7 @@ const SPSU_LEVELS = [
           <div class="controls-panel">
             <button class="btn btn-action" id="btn-push">📥 PUSH TOKEN TO STACK</button>
             <button class="btn btn-action" id="btn-pop">📤 POP & MATCH PAIR</button>
+            <button class="btn btn-ghost" id="btn-reset-stack">🔄 Reset Stream</button>
           </div>
           <div class="battle-log" id="lvl2-log">Telemetry: Token '${stream[currentIdx]}' is waiting. Open bracket? PUSH it!</div>
         </div>
@@ -1757,6 +1787,14 @@ const SPSU_LEVELS = [
                (open === '[' && close === ']') ||
                (open === '{' && close === '}');
       }
+
+      container.querySelector('#btn-reset-stack').onclick = () => {
+        window.spsuAudio.click();
+        stack = [];
+        currentIdx = 0;
+        updateUI();
+        log.textContent = `Stream and stack reset. Ready to parse!`;
+      };
 
       container.querySelector('#btn-push').onclick = () => {
         window.spsuAudio.laser();
@@ -1848,6 +1886,7 @@ const SPSU_LEVELS = [
           <div class="controls-panel">
             <button class="btn btn-action" id="btn-sever">✂️ SEVER CYCLE: Point Node 104 -> 105 (EXIT)</button>
             <button class="btn btn-action" id="btn-traverse">🚀 RUN POINTER TEST RUNNER</button>
+            <button class="btn btn-ghost" id="btn-reset-chain">🔄 Reset Linkages</button>
           </div>
           <div class="battle-log" id="lvl3-log">Telemetry: Loop detected! Node [104] next address is currently [102]. Click SEVER to redirect next pointer!</div>
         </div>
@@ -1876,6 +1915,14 @@ const SPSU_LEVELS = [
       }
 
       renderChain();
+
+      container.querySelector('#btn-reset-chain').onclick = () => {
+        window.spsuAudio.click();
+        chain[3].next = 102;
+        isSevered = false;
+        renderChain();
+        log.textContent = `Linkages reset: Node 104 is once again looping back to Node 102.`;
+      };
 
       container.querySelector('#btn-sever').onclick = () => {
         window.spsuAudio.laser();
@@ -2011,6 +2058,7 @@ const SPSU_LEVELS = [
           <div class="controls-panel">
             <button class="btn btn-action" id="btn-check-partition">⚡ VERIFY PARTITION INTEGRITY</button>
             <button class="btn btn-action" id="btn-quick-solve">🪄 AUTO-OPTIMIZE SWAP STEP</button>
+            <button class="btn btn-ghost" id="btn-reset-sort">🔄 Reset Array</button>
           </div>
           <div class="battle-log" id="lvl5-log">Telemetry: Click any two elements to SWAP their positions until all elements < ${pivot} are on the left!</div>
         </div>
@@ -2050,6 +2098,14 @@ const SPSU_LEVELS = [
           render();
         }
       }
+
+      container.querySelector('#btn-reset-sort').onclick = () => {
+        window.spsuAudio.click();
+        data = [45, 12, 89, 34, 67, 23];
+        selectedIdx = null;
+        render();
+        log.textContent = `Array reset to original unsorted elements!`;
+      };
 
       container.querySelector('#btn-quick-solve').onclick = () => {
         window.spsuAudio.laser();
@@ -2214,16 +2270,35 @@ const SPSU_LEVELS = [
       const log = container.querySelector('#lvl7-log');
       const buttons = container.querySelectorAll('.graph-node-btn');
 
+      const validNeighbors = {
+        'S': ['A', 'B'],
+        'A': ['D'],
+        'B': ['C'],
+        'C': ['E'],
+        'D': ['T'],
+        'E': ['T']
+      };
+
       buttons.forEach(btn => {
         btn.onclick = () => {
           const id = btn.getAttribute('data-id');
           if (id === 'S') return;
-          window.spsuAudio.click();
-          if (!selectedPath.includes(id)) {
+          const lastNode = selectedPath[selectedPath.length - 1];
+
+          if (selectedPath.includes(id)) {
+            log.textContent = `Node [${id}] is already visited in current route!`;
+            return;
+          }
+
+          if (validNeighbors[lastNode] && validNeighbors[lastNode].includes(id)) {
+            window.spsuAudio.click();
             selectedPath.push(id);
             btn.classList.add('active-node');
             pathDisp.textContent = `[${selectedPath.join(' ➡️ ')}]`;
-            log.textContent = `Added node [${id}] to route.`;
+            log.textContent = `Connected edge (${lastNode} -> ${id}). Total hops: ${selectedPath.length - 1}`;
+          } else {
+            window.spsuAudio.error();
+            log.textContent = `⚠️ No direct link from [${lastNode}] to [${id}]! Follow adjacent graph edges!`;
           }
         };
       });
@@ -2585,16 +2660,29 @@ class SPSUCertificateEngine {
     this.ctx = null;
   }
 
-  generateCertificate(playerName, totalXP, badgesCount, container) {
+  generateCertificate(playerName, totalXP, badgesCount, container, isFullMastery = false, currentLevel = 1) {
     const issueDate = new Date().toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'long',
       day: 'numeric'
     });
-    const verificationCode = 'SPSU-DSA-' + Math.random().toString(36).substring(2, 8).toUpperCase() + '-VERIFIED';
+    const verificationCode = isFullMastery 
+      ? ('SPSU-DSA-' + Math.random().toString(36).substring(2, 8).toUpperCase() + '-VERIFIED')
+      : 'SPSU-DSA-IN-PROGRESS-TRAINING';
+
+    const bannerHtml = !isFullMastery ? `
+      <div class="cert-status-banner" style="background: rgba(255, 183, 3, 0.15); border: 2px solid #ffb703; padding: 14px 20px; border-radius: 12px; margin-bottom: 20px; text-align: center;">
+        <span style="font-size: 20px;">🛡️</span>
+        <b style="color: #ffb703; font-size: 15px;"> CADET IN TRAINING PREVIEW (${Math.min(10, currentLevel - 1)} / 10 LEVELS CLEARED)</b>
+        <p style="font-size: 13px; color: #cbd5e1; margin-top: 4px;">
+          Complete all 10 DSA cyber-levels and defeat the Apex Boss to unlock the official verified University seal!
+        </p>
+      </div>
+    ` : '';
 
     container.innerHTML = `
       <div class="cert-wrapper">
+        ${bannerHtml}
         <div class="cert-card" id="printable-cert">
           <div class="cert-border-outer">
             <div class="cert-border-inner">
@@ -2827,6 +2915,17 @@ class SPSUGameApp {
     }
     this.updateHeaderStats();
     this.bindGlobalEvents();
+
+    // Auto-unlock Web Audio on first user interaction
+    const unlockAudio = () => {
+      window.spsuAudio.init();
+      window.removeEventListener('click', unlockAudio);
+      window.removeEventListener('keydown', unlockAudio);
+      window.removeEventListener('touchstart', unlockAudio);
+    };
+    window.addEventListener('click', unlockAudio);
+    window.addEventListener('keydown', unlockAudio);
+    window.addEventListener('touchstart', unlockAudio);
   }
 
   bindGlobalEvents() {
@@ -3180,11 +3279,14 @@ class SPSUGameApp {
   renderCertificateScreen() {
     const container = document.getElementById('cert-output-container');
     if (!container) return;
+    const isMastery = this.state.unlockedLevel > 10;
     window.spsuCert.generateCertificate(
       this.state.playerName,
       this.state.xp,
       this.state.badges.length,
-      container
+      container,
+      isMastery,
+      this.state.unlockedLevel
     );
   }
 
