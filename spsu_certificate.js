@@ -67,8 +67,8 @@ class SPSUCertificateEngine {
 
                 <div class="cert-signatures">
                   <div class="sig-block">
-                    <div class="sig-line">Dr. Algorithmic Chair</div>
-                    <div class="sig-role">Dean, Computing Sciences SPSU</div>
+                    <div class="sig-line">Powered by Kapil</div>
+                    <div class="sig-role">Architect & Creator • SPSU DSA Odyssey</div>
                   </div>
                   <div class="sig-seal">
                     <div class="official-seal">
@@ -216,11 +216,11 @@ class SPSUCertificateEngine {
     ctx.fillText('Verification: ' + verificationCode, 350, 685);
 
     ctx.fillStyle = '#ffffff';
-    ctx.font = 'bold 16px sans-serif';
-    ctx.fillText('Dean, Computing Sciences SPSU', 850, 660);
+    ctx.font = 'bold 18px sans-serif';
+    ctx.fillText('Powered by Kapil', 850, 660);
     ctx.font = '14px sans-serif';
     ctx.fillStyle = '#00e5ff';
-    ctx.fillText('Sir Padampat Singhania University', 850, 685);
+    ctx.fillText('Architect & Creator • SPSU DSA Odyssey', 850, 685);
 
     // Download trigger
     const link = document.createElement('a');
